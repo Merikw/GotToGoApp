@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "647121171203",
+    "firebase_url": "https://gottogoapplication.firebaseio.com",
+    "project_id": "gottogoapplication",
+    "storage_bucket": "gottogoapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647121171203:android:923f85bcbe45c759",
+        "android_client_info": {
+          "package_name": "nl.gottogo.gottogoapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647121171203-oli3ll35cmmt0mn9981evmpmemo0vvru.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nl.gottogo.gottogoapplication",
+            "certificate_hash": "cbdf9cc14ebf5b971b179c8fc0e3f294524b22ba"
+          }
+        },
+        {
+          "client_id": "647121171203-jjd4g1aktuao0e2mn5v0aafg0od8cjt7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWqa7FzchZaEbGj55lISLTcJJqlQ1mIaU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647121171203-jjd4g1aktuao0e2mn5v0aafg0od8cjt7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
