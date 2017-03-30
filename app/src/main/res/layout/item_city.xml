@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llcity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +9,34 @@
     <TextView
         android:id="@+id/tvCityName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="10"
+        android:text="Stadnaam"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:textColor="@color/light_font"
+        tools:capitalize="sentences"
+        tools:textSize="36sp"
+        />
 
     <TextView
         android:id="@+id/tvCityDescription"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:shadowColor="@color/text_shadow"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="10"
+        android:text="Dit is de placeholder voor stadtext"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/light_font"
+        android:textSize="16sp"
+        android:maxLines = "2"/>
+
 
 
 </LinearLayout>
