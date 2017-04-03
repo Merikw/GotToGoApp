@@ -15,8 +15,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.child("Name").child("Email").setValue("merikw@hotmail.com");
+        System.out.println("Test");
     }
 }

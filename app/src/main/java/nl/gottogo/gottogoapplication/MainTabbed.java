@@ -1,6 +1,13 @@
 package nl.gottogo.gottogoapplication;
 
+import android.*;
+import android.Manifest;
+import android.accounts.AccountManager;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -28,6 +35,7 @@ public class MainTabbed extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private FirebaseRepo repo;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -51,6 +59,27 @@ public class MainTabbed extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.GET_ACCOUNTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.GET_ACCOUNTS},
+                        0);
+            }
+        }
+
+        try {
+            AccountManager am = AccountManager.get(this);
+            FirebaseRepo repo = new FirebaseRepo(am);
+            repo.registerDevice();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
@@ -74,6 +103,10 @@ public class MainTabbed extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public Activity getActivity() {
+        return this;
     }
 
     /**
