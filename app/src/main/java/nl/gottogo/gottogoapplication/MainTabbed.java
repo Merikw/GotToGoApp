@@ -60,7 +60,7 @@ public class MainTabbed extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // Here, thisActivity is the current activity
+        // Here, thisActivity is the current ativity
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
