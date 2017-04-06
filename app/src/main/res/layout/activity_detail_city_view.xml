@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="nl.gottogo.gottogoapplication.DetailCityView">
+
+    <TextView
+        android:id="@+id/tvCityDesc"
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/ivCityPic"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <ImageView
+        android:id="@+id/ivCityPic"
+        android:layout_width="368dp"
+        android:layout_height="176dp"
+        app:srcCompat="@drawable/amsterdam"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="73dp" />
+
+    <TextView
+        android:id="@+id/tvCityName"
+        android:layout_width="368dp"
+        android:layout_height="57dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        android:textAlignment="viewStart"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/ivCityPic"
+        tools:layout_editor_absoluteX="8dp" />
+</android.support.constraint.ConstraintLayout>

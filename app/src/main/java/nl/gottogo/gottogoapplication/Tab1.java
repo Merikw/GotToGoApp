@@ -4,6 +4,7 @@ package nl.gottogo.gottogoapplication;
  * Created by Merik on 23/03/2017.
  */
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ public class Tab1 extends Fragment{
        //Find the listview
         ListView lv = (ListView)rootView.findViewById(R.id.LvRec);
         //test data
-        ArrayList<City> data = new ArrayList<City>();
+        final ArrayList<City> data = new ArrayList<City>();
         data.add(new City("Berghem", 10,"Berghem (Brabants: Bèrge) (vroeger ook als Berchem gespeld) is een Noord-Brabants dorp aan de rand van Oss, met circa 10.000 inwoners. Tot 1 januari 1994 vormde het een zelfstandige gemeente, sindsdien behoort het tot de gemeente Oss. Op het gebied van Berghem worden uitbreidingsplannen gerealiseerd, zodat in 2011 reeds ongeveer 11% van de inwoners van de Gemeente Oss uit Berghemnaren bestond.","plaatjeid"));
         data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
         data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
@@ -38,7 +39,9 @@ public class Tab1 extends Fragment{
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Logic.getInstance().setCity(data.get(i));
+                Intent detailIntent = new Intent(getContext(),DetailCityView.class);
+                startActivity(detailIntent);
             }
         });
 

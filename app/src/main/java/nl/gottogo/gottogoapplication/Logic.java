@@ -7,7 +7,7 @@ package nl.gottogo.gottogoapplication;
 public class Logic {
 
     private String email;
-
+    private City city;
     private static Logic instance = null;
     protected Logic(){
 
@@ -28,4 +28,7 @@ public class Logic {
         this.email = mail;
     }
 
+    public City getCity() {return city;}
+
+    public void setCity(City city) {this.city = city;}
 }
