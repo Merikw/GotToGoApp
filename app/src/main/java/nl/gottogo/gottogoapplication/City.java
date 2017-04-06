@@ -1,6 +1,7 @@
 package nl.gottogo.gottogoapplication;
 
 import android.graphics.Bitmap;
+import android.media.Rating;
 
 /**
  * Created by dande on 30-3-2017.
@@ -10,16 +11,14 @@ public class City {
     private String name;
     private String id;
     private String place_id;
-    private int population;
-    private String description;
     private Bitmap image;
     private String bannerRef;
+    private CityRating cityRating;
 
-    public City(String name, int population, String description, String bannerRef) {
+
+    public City(String name,CityRating cityRating) {
         this.name = name;
-        this.population = population;
-        this.description = description;
-        this.bannerRef = bannerRef;
+        this.cityRating = cityRating;
     }
 
     public City(){
@@ -32,22 +31,6 @@ public class City {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getPopulation() {
-        return population;
-    }
-
-    public void setPopulation(int population) {
-        this.population = population;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getBannerRef() {
@@ -68,6 +51,14 @@ public class City {
 
     public String getId() {return id;}
 
+    public CityRating getCityRating() {
+        return cityRating;
+    }
+
+    public void setCityRating(CityRating cityRating) {
+        this.cityRating = cityRating;
+    }
+
     public void setId(String id) {this.id = id;}
 
     public String getPlace_id() {return place_id;}
@@ -76,6 +67,6 @@ public class City {
 
     @Override
     public String toString() {
-        return this.description;
+        return this.name;
     }
 }

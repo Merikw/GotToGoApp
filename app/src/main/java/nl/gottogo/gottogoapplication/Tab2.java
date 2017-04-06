@@ -41,16 +41,15 @@ public class Tab2 extends Fragment {
                 JSONclass json = new JSONclass();
                 String jsonText = null;
                 try {
-                    jsonText = json.execute("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+charSequence.toString()+"&types=(cities)&key=AIzaSyD5zGTckWc2J6MlhjNtnit2uyUZWJibRqA").get();
+                    jsonText = json.execute("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + charSequence.toString() + "&types=(cities)&key=AIzaSyD5zGTckWc2J6MlhjNtnit2uyUZWJibRqA").get();
 
                     JSONObject jsonObject = new JSONObject(jsonText);
                     JSONArray jsonArray = jsonObject.getJSONArray("predictions");
                     ArrayList<String> cities = new ArrayList<String>();
 
-                    for(int x = 0; x < jsonArray.length(); x++){
+                    for (int x = 0; x < jsonArray.length(); x++) {
                         JSONObject city = jsonArray.getJSONObject(x);
                         City c = new City();
-                        c.setDescription(city.getString("description"));
                         cities.add(c.toString());
                     }
 

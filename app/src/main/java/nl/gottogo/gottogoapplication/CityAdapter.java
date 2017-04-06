@@ -35,13 +35,11 @@ public class CityAdapter extends ArrayAdapter<City> {
 
         LinearLayout linearLayout = (LinearLayout) convertView.findViewById(R.id.llcity);
         TextView tvCityName = (TextView) convertView.findViewById(R.id.tvCityName);
-        TextView tvCityDescription = (TextView) convertView.findViewById(R.id.tvCityDescription);
 
 
 
         linearLayout.setBackgroundResource(R.drawable.amsterdam);
         tvCityName.setText(city.getName());
-        tvCityDescription.setText(city.getDescription());
 
         return convertView;
     }

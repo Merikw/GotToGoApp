@@ -5,6 +5,7 @@ package nl.gottogo.gottogoapplication;
  */
 
 import android.content.Intent;
+import android.media.Rating;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,12 +28,11 @@ public class Tab1 extends Fragment{
         ListView lv = (ListView)rootView.findViewById(R.id.LvRec);
         //test data
         final ArrayList<City> data = new ArrayList<City>();
-        data.add(new City("Berghem", 10,"Berghem (Brabants: Bèrge) (vroeger ook als Berchem gespeld) is een Noord-Brabants dorp aan de rand van Oss, met circa 10.000 inwoners. Tot 1 januari 1994 vormde het een zelfstandige gemeente, sindsdien behoort het tot de gemeente Oss. Op het gebied van Berghem worden uitbreidingsplannen gerealiseerd, zodat in 2011 reeds ongeveer 11% van de inwoners van de Gemeente Oss uit Berghemnaren bestond.","plaatjeid"));
-        data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
-        data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
-        data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
-        data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
-        data.add(new City("Oss", 90000," coole gozers","plaatjeid"));
+        data.add(new City("Berghem",new CityRating(1,1,1,1)));
+        data.add(new City("hi1",new CityRating(1,1,1,1)));
+        data.add(new City("h2i",new CityRating(1,1,1,1)));
+        data.add(new City("Berghem3",new CityRating(1,1,1,1)));
+        data.add(new City("Ber4ghem",new CityRating(1,1,1,1)));
         //Defining an adapter
         CityAdapter ca = new CityAdapter(this.getContext(),data);
 
