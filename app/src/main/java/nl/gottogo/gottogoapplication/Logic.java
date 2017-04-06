@@ -1,5 +1,7 @@
 package nl.gottogo.gottogoapplication;
 
+import java.util.ArrayList;
+
 /**
  * Created by Merik on 05/04/2017.
  */
@@ -9,6 +11,9 @@ public class Logic {
     private String email;
     private City city;
     private static Logic instance = null;
+
+    private FirebaseRepo repo = new FirebaseRepo();
+
     protected Logic(){
 
     }
@@ -31,4 +36,9 @@ public class Logic {
     public City getCity() {return city;}
 
     public void setCity(City city) {this.city = city;}
+
+    public void addCity(City city){
+        repo.addCity(city);
+    }
+
 }
