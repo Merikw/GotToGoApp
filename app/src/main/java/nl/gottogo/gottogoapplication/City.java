@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 
 public class City {
     private String name;
+    private String id;
+    private String place_id;
     private int population;
     private String description;
     private Bitmap image;
@@ -63,6 +65,14 @@ public class City {
     public Bitmap getImage(){
           return this.image;
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
+
+    public String getPlace_id() {return place_id;}
+
+    public void setPlace_id(String place_id) {this.place_id = place_id;}
 
     @Override
     public String toString() {
