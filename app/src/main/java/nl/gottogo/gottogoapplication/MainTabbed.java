@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.Window;
 import android.widget.TextView;
 
 public class MainTabbed extends AppCompatActivity {
@@ -47,8 +48,6 @@ public class MainTabbed extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -147,11 +146,11 @@ public class MainTabbed extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Tab 1";
+                    return "Cities";
                 case 1:
-                    return "Tab 2";
+                    return "Your list";
                 case 2:
-                    return "Tab 3";
+                    return "City Detail";
             }
             return null;
         }

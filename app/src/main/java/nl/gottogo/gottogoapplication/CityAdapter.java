@@ -43,8 +43,6 @@ public class CityAdapter extends ArrayAdapter<City> {
         tvCityName.setText(city.getName());
         tvCityDescription.setText(city.getDescription());
 
-
-
         return convertView;
     }
 

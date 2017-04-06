@@ -31,18 +31,18 @@ public class FirebaseRepo extends AppCompatActivity {
 
     }
 
-    public void registerDevice(){
+    public void registerDevice() {
 
         Account[] accounts = am.getAccountsByType("com.google");
 
-        Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
+        System.out.println("HEEEE");
 
-//        String email = accounts[0].name;
+        //String email = accounts[0].name;
+        //Logic.getInstance().setUserMail(email);
 
-        mDatabase.child("Users").child("merikw@hotmail.com").setValue("Budapest");
-        mDatabase.child("Users").child("merikw@hotmail.com").setValue("Prague");
+        Logic.getInstance().setUserMail("Merik");
 
-        System.out.println("done");
+        mDatabase.child("Merik").child("Budapest").setValue("8");
+        mDatabase.child("Merik").child("Budapest").setValue("9");
     }
-
 }
