@@ -19,6 +19,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,67 +38,37 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static nl.gottogo.gottogoapplication.R.id.place_autocomplete_fragment;
+
 public class Tab2 extends Fragment {
 
     private City selected;
     private ArrayList<City> cities;
     private DatabaseReference mUserDatabase;
 
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.tab2, container, false);
         Button btnAdd = (Button) rootView.findViewById(R.id.btnAdd);
 
-        final AutoCompleteTextView textView = (AutoCompleteTextView) rootView.findViewById(R.id.txtCity);
 
-        textView.addTextChangedListener(new TextWatcher() {
+        PlaceAutocompleteFragment autocompleteFragment  = (PlaceAutocompleteFragment)getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+            public void onPlaceSelected(Place place) {
+                City c = new City();
+                c.setId(place.getId());
+                c.setPlace_id(place.getId());
+                c.setName(place.getName().toString());
+                selected = c;
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                JSONclass json = new JSONclass();
-                String jsonText = null;
-                try {
-                    jsonText = json.execute("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+charSequence.toString()+"&types=(cities)&key=AIzaSyD5zGTckWc2J6MlhjNtnit2uyUZWJibRqA").get();
-
-                    JSONObject jsonObject = new JSONObject(jsonText);
-                    JSONArray jsonArray = jsonObject.getJSONArray("predictions");
-                    cities = new ArrayList<City>();
-
-                    for(int x = 0; x < jsonArray.length(); x++){
-                        JSONObject city = jsonArray.getJSONObject(x);
-                        City c = new City();
-                        c.setPlace_id(city.getString("place_id"));
-                        c.setId(city.getString("id"));
-                        c.setName(city.getString("description"));
-                        cities.add(c);
-                    }
-
-                    ArrayAdapter<City> adapter = new ArrayAdapter<City>(getContext(), android.R.layout.simple_list_item_1, cities);
-                    textView.setAdapter(adapter);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selected = cities.get(0);
-            }
+            public void onError(Status status) {
+        }
         });
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
