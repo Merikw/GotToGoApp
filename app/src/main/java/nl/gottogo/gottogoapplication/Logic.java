@@ -1,5 +1,8 @@
 package nl.gottogo.gottogoapplication;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 /**
@@ -39,6 +42,10 @@ public class Logic {
 
     public void addCity(City city){
         repo.addCity(city);
+    }
+
+    public void addImage(Bitmap image, Intent data, City city){
+        repo.addImage(image, city, data);
     }
 
 }

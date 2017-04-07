@@ -61,13 +61,26 @@ public class MainTabbed extends AppCompatActivity {
 
         // Here, thisActivity is the current ativity
         if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.GET_ACCOUNTS)
+                Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     android.Manifest.permission.GET_ACCOUNTS)) {
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.GET_ACCOUNTS},
+                        0);
+            }
+        }
+
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
                         0);
             }
         }
@@ -121,7 +134,7 @@ public class MainTabbed extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             System.out.println(position);
-            switch(position){
+            switch (position) {
                 case 0:
                     Tab1 tab1 = new Tab1();
                     return tab1;

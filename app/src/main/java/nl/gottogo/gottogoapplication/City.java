@@ -21,6 +21,12 @@ public class City {
         this.cityRating = cityRating;
     }
 
+    public City(String id, String place_id, String name){
+        this.id = id;
+        this.place_id = place_id;
+        this.name = name;
+    }
+
     public City(){
 
     }
