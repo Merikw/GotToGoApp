@@ -98,6 +98,7 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Nog fixen
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             image = (Bitmap) data.getExtras().get("data");
             preview.setImageBitmap(image);
