@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llcity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:elevation="5dp"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/tvCityName"
@@ -19,10 +21,16 @@
         android:textAppearance="@android:style/TextAppearance.Material.Large"
         android:textColor="@color/light_font"
         tools:capitalize="sentences"
-        tools:textSize="36sp"
-        />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:textSize="36sp" />
 
-
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="49dp"
+        android:layout_height="58dp"
+        android:layout_gravity="top|right"
+        android:layout_weight="0.09"/>
 
 
 </LinearLayout>
