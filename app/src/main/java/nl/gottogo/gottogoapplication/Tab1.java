@@ -67,10 +67,12 @@ public class Tab1 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Logic.getInstance().setCity(data.get(i));
-                Intent detailIntent = new Intent(getContext(), DetailCityView.class);
-                startActivity(detailIntent);
+                ca.setFocus(i);
+                ca.notifyDataSetChanged();
+
             }
         });
+
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference("users");
 

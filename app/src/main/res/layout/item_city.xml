@@ -1,35 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llcity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvCityName"
+    <LinearLayout
+        android:id="@+id/llBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:shadowColor="@color/text_shadow"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="10"
-        android:text="Stadnaam"
-        android:textAppearance="@android:style/TextAppearance.Material.Large"
-        android:textColor="@color/light_font"
-        tools:capitalize="sentences"
-        tools:textSize="36sp"
-        />
+        android:orientation="horizontal">
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        <TextView
+            android:id="@+id/tvCityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="10"
+            android:text="Stadnaam"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:textColor="@color/light_font"
+            tools:capitalize="sentences"
+            tools:textSize="36sp" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llButtons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/btnDetail"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="5dp"
+            android:text="Detail" />
 
+        <Button
+            android:id="@+id/btnReview"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="5dp"
+            android:text="Review" />
 
+        <Button
+            android:id="@+id/btnRemove"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:elevation="10dp"
+            android:text="Remove"
+            android:theme="@style/AppTheme" />
+    </LinearLayout>
 
 
 </LinearLayout>
