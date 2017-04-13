@@ -44,8 +44,8 @@ public class Logic {
         repo.addCity(city);
     }
 
-    public void addImage(Bitmap image, Intent data, City city){
-        repo.addImage(image, city, data);
+    public void addImage(Bitmap image, City city){
+        repo.addImage(image, city);
     }
 
 }

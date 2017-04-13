@@ -84,7 +84,9 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Logic.getInstance().addImage(image, data, selected);
+                if(selected != null && selected.getPlace_id() != null && selected.getPlace_id().length() > 0) {
+                    Logic.getInstance().addImage(image, selected);
+                }
             }
         });
 

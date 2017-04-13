@@ -7,13 +7,16 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.ArrayAdapter;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -40,7 +45,6 @@ public class FirebaseRepo extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String android_id;
     private AccountManager am;
-    private StorageReference storageRef;
 
     public FirebaseRepo(AccountManager am) {
 
@@ -50,7 +54,8 @@ public class FirebaseRepo extends AppCompatActivity {
     }
 
     public FirebaseRepo() {
-        mDatabase = FirebaseDatabase.getInstance().getReference();;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        ;
     }
 
     public void registerDevice() {
@@ -70,16 +75,24 @@ public class FirebaseRepo extends AppCompatActivity {
         mDatabase.child(city.getPlace_id()).setValue(city.getName());
     }
 
-    public void addImage(Bitmap image, City city, Intent data){
+    public void addImage(Bitmap image, City city) {
+        Calendar c = Calendar.getInstance();
+        StorageReference imgRef = FirebaseStorage.getInstance().getReference().child(city.getId() + "/" + c.toString());
 
-        Uri uri = data.getData();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
 
-        storageRef = FirebaseStorage.getInstance(city.getId()).getReference(uri.getLastPathSegment());
-
-        storageRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        UploadTask uploadTask = imgRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                System.out.println("Coudn't upload image.");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload done. ");
+                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
             }
         });
     }
