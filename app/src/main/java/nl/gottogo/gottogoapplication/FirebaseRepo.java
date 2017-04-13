@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -72,8 +73,8 @@ public class FirebaseRepo extends AppCompatActivity {
     }
 
     public void addCity(City city) {
-        mDatabase.child(Logic.getInstance().getUserMail()).child(city.getPlace_id()).setValue(city.getName());
-        mDatabase.child(city.getPlace_id()).setValue(city.getName());
+        mDatabase.child("users").child(Logic.getInstance().getUserMail()).child(city.getPlace_id()).setValue(city.getName());
+        mDatabase.child("cities").child(city.getPlace_id()).setValue(city.getName());
     }
 
     public void addImage(Bitmap image, City city) {

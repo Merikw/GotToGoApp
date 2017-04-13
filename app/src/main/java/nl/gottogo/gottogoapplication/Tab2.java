@@ -170,7 +170,7 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                
+
                 if(lon == 0 || lat == 0){
                     lon = loc.getLongitude();
                     lat = loc.getLatitude();
@@ -195,7 +195,7 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
             }
         });
 
-        mUserDatabase = FirebaseDatabase.getInstance().getReference(Logic.getInstance().getUserMail());
+        mUserDatabase = FirebaseDatabase.getInstance().getReference("users").child(Logic.getInstance().getUserMail());
         final ArrayList<City> citiesListed = new ArrayList<City>();
 
         final CityAdapter ca = new CityAdapter(getContext(), citiesListed);
