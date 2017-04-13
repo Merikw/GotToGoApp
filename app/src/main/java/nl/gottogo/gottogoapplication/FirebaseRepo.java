@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -77,7 +78,8 @@ public class FirebaseRepo extends AppCompatActivity {
 
     public void addImage(Bitmap image, City city) {
         Calendar c = Calendar.getInstance();
-        StorageReference imgRef = FirebaseStorage.getInstance().getReference().child(city.getId()).child(c.toString());
+        String s = c.getTime().toString() + String.valueOf(c.MILLISECOND)+ ".jpg";
+        StorageReference imgRef = FirebaseStorage.getInstance().getReference().child(city.getId() + "/" + s);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);

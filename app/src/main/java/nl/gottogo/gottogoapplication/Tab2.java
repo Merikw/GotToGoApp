@@ -169,6 +169,12 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
                 }
 
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                
+                if(lon == 0 || lat == 0){
+                    lon = loc.getLongitude();
+                    lat = loc.getLatitude();
+                }
 
                 Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
                 List<android.location.Address> addresses = null;
