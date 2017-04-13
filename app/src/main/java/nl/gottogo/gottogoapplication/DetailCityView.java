@@ -21,6 +21,10 @@ public class DetailCityView extends AppCompatActivity {
         RatingBar enviromentRating = (RatingBar) findViewById(R.id.enviromentRating);
         RatingBar transportRating = (RatingBar) findViewById(R.id.transportRating);
 
+        if(city.getCityRating() == null){
+
+        }
+
         foodRating.setRating(city.getCityRating().getFoodRating());
         sightRating.setRating(city.getCityRating().getSightsRating());
         enviromentRating.setRating(city.getCityRating().getEnviromentRating());

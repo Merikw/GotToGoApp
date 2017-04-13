@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nl.gottogo.gottogoapplication.MainActivity"
+    tools:context="nl.gottogo.gottogoapplication.MainTabbed"
     tools:layout_editor_absoluteY="25dp"
     tools:layout_editor_absoluteX="0dp">
 
@@ -12,13 +12,13 @@
         android:id="@+id/place_autocomplete_fragment2"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        class = "com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
 
     <Button
         android:id="@+id/btnCamera"

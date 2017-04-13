@@ -25,10 +25,11 @@ public class City {
         this.id = id;
         this.place_id = place_id;
         this.name = name;
+        this.cityRating = new CityRating(0, 0, 0, 0);
     }
 
     public City(){
-
+        this.cityRating = new CityRating(0, 0, 0, 0);
     }
 
     public String getName() {

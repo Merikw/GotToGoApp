@@ -16,7 +16,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,8 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import java.util.zip.Deflater;
+
 import static nl.gottogo.gottogoapplication.R.id.imageView;
 
 public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailedListener{
@@ -44,7 +49,7 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View rootView = inflater.inflate(R.layout.tab3, container, false);
+        final View rootView = inflater.inflate(R.layout.tab3, container, false);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getContext())
@@ -105,6 +110,18 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
             image = (Bitmap) data.getExtras().get("data");
             preview.setImageBitmap(image);
             this.data = data;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        Fragment fragment = (fm.findFragmentById(R.id.place_autocomplete_fragment2));
+        FragmentTransaction ft = fm.beginTransaction();
+        if(fragment != null) {
+            ft.remove(fragment);
+            ft.commit();
         }
     }
 }
