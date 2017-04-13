@@ -185,9 +185,9 @@ public class MainTabbed extends AppCompatActivity {
                 case 0:
                     return "Cities";
                 case 1:
-                    return "Your list";
+                    return "My list";
                 case 2:
-                    return "City Detail";
+                    return "Add photo's";
             }
             return null;
         }
