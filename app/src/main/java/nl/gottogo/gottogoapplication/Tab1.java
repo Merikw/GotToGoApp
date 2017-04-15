@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,22 +29,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.Semaphore;
 
 public class Tab1 extends Fragment {
 
     private DatabaseReference mUserDatabase;
     private GoogleApiClient mGoogleApiClient;
-    private HashMap<String, Integer> citiesCount;
+    private HashMap<String, ArrayList<String>> citiesUsers;
+
+    private final Semaphore semaphore = new Semaphore(0);
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab1, container, false);
 
-        citiesCount = new HashMap<>();
+        citiesUsers = new HashMap<>();
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getContext())
@@ -79,28 +84,46 @@ public class Tab1 extends Fragment {
         mUserDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                citiesCount.clear();
-                ArrayList<String > ownList = new ArrayList<String>();
-                for (DataSnapshot children : dataSnapshot.getChildren()) {
-                    if (!dataSnapshot.getKey().toLowerCase().equals(Logic.getInstance().getUserMail().toLowerCase())) {
-                        Integer n = citiesCount.get(children.getKey());
-                        if (n == null) {
-                            n = 1;
-                        } else {
-                            n++;
-                        }
-                        citiesCount.put(children.getKey(), n);
-                    } else{
-                        System.out.println("Ik bne niet merik");
+                final ArrayList<String > ownList = new ArrayList<String>();
+                for (final DataSnapshot children : dataSnapshot.getChildren()) {
+                    System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
+                    ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
+                    if(cities == null){
+                        cities = new ArrayList<String>();
+                    }
+                    cities.add(children.getKey());
+                    citiesUsers.put(dataSnapshot.getKey(), cities);
+                }
+
+                ArrayList<String> places_id = new ArrayList<String>();
+                ArrayList<String> ownPlaces = new ArrayList<String>();
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        ownPlaces.addAll(entry.getValue());
                     }
                 }
 
-                Comparer comparer = new Comparer();
-                comparer.sortMapByValue(citiesCount);
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    boolean match = false;
+                    String matchedPlace = "";
+                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        for(String place : ownPlaces){
+                            for(String otherPlace : entry.getValue()){
+                                if(place.equals(otherPlace)){
+                                    match = true;
+                                    matchedPlace = place;
+                                }
+                            }
+                        }
+                    }
 
-                ArrayList<String> places_id = new ArrayList<String>();
-                for(Map.Entry<String, Integer> entry : citiesCount.entrySet()){
-                    places_id.add(entry.getKey());
+                    if(match){
+                        for(String place : entry.getValue()){
+                            if(!place.equals(matchedPlace)){
+                                places_id.add(place);
+                            }
+                        }
+                    }
                 }
 
                 for(String id : places_id) {
