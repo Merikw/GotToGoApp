@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.support.v7.widget.*;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,7 +61,7 @@ public class CityAdapter extends ArrayAdapter<City> {
 
         llButtons.setVisibility(convertView.GONE);
 
-            mUserDatabase = FirebaseDatabase.getInstance().getReference("cities").child(city.getPlace_id());
+        mUserDatabase = FirebaseDatabase.getInstance().getReference("cities").child(city.getPlace_id());
         mUserDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -162,15 +163,15 @@ public class CityAdapter extends ArrayAdapter<City> {
                 try {
                     mUserDatabase.removeValue();
                 } catch (Exception e){
-                        FileOutputStream outputStream = null;
-                        try {
-                            outputStream = getContext().openFileOutput("cities", Context.MODE_APPEND);
-                            outputStream.write((city.getPlace_id() + "\n").getBytes());
-                        } catch (FileNotFoundException e1) {
-                            e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
+                    FileOutputStream outputStream = null;
+                    try {
+                        outputStream = getContext().openFileOutput("cities", Context.MODE_APPEND);
+                        outputStream.write((city.getPlace_id() + "\n").getBytes());
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });

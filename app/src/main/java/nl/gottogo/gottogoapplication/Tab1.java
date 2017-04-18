@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,7 +30,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,12 +55,24 @@ public class Tab1 extends Fragment {
     private DatabaseReference mUserDatabase;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, ArrayList<String>> citiesUsers;
+    private ArrayList<String> removedCities;
+    private Button undoRemove;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab1, container, false);
 
+        Logic.getInstance().setContext(getContext());
+
         citiesUsers = new HashMap<>();
+        removedCities = Logic.getInstance().readFile();
+
+        rootView.findViewById(R.id.btnUndoRemove).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Logic.getInstance().removeFileRemovedCities();
+            }
+        });
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getContext())
@@ -79,7 +104,7 @@ public class Tab1 extends Fragment {
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        final ArrayList<String > ownList = new ArrayList<String>();
+        final ArrayList<String> ownList = new ArrayList<String>();
 
         mUserDatabase.addChildEventListener(new ChildEventListener() {
             @Override
@@ -87,7 +112,7 @@ public class Tab1 extends Fragment {
                 for (final DataSnapshot children : dataSnapshot.getChildren()) {
                     System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
                     ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
-                    if(cities == null){
+                    if (cities == null) {
                         cities = new ArrayList<String>();
                     }
                     cities.add(children.getKey());
@@ -96,19 +121,19 @@ public class Tab1 extends Fragment {
 
                 ArrayList<String> places_id = new ArrayList<String>();
                 ArrayList<String> ownPlaces = new ArrayList<String>();
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
-                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
+                    if (entry.getKey().equals(Logic.getInstance().getUserMail())) {
                         ownPlaces.addAll(entry.getValue());
                     }
                 }
 
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
                     boolean match = false;
                     String matchedPlace = "";
-                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
-                        for(String place : ownPlaces){
-                            for(String otherPlace : entry.getValue()){
-                                if(place.equals(otherPlace)){
+                    if (!entry.getKey().equals(Logic.getInstance().getUserMail())) {
+                        for (String place : ownPlaces) {
+                            for (String otherPlace : entry.getValue()) {
+                                if (place.equals(otherPlace)) {
                                     match = true;
                                     matchedPlace = place;
                                 }
@@ -116,20 +141,30 @@ public class Tab1 extends Fragment {
                         }
                     }
 
-                    if(match){
-                        for(String place : entry.getValue()){
-                            if(!place.equals(matchedPlace)){
+                    if (match) {
+                        for (String place : entry.getValue()) {
+                            if (!place.equals(matchedPlace)) {
                                 places_id.add(place);
                             }
                         }
                     }
                 }
 
-                for(final String id : places_id) {
+                for (final String id : places_id) {
                     Places.GeoDataApi.getPlaceById(mGoogleApiClient, id)
                             .setResultCallback(new ResultCallback<PlaceBuffer>() {
                                 @Override
                                 public void onResult(PlaceBuffer places) {
+
+                                    boolean removed = false;
+                                    Iterator<String> iterRemoved = removedCities.iterator();
+
+                                    while (iterRemoved.hasNext()) {
+                                        String cityID = iterRemoved.next();
+
+                                        if (cityID.equals(id))
+                                            removed = true;
+                                    }
 
                                     Iterator<String> iter = ownList.iterator();
 
@@ -140,7 +175,7 @@ public class Tab1 extends Fragment {
                                             iter.remove();
                                     }
 
-                                    if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                    if (places.getStatus().isSuccess() && places.getCount() > 0 && !removed) {
                                         final Place place = places.get(0);
                                         System.out.println(place.getName());
                                         City c = new City(place.getId(), place.getId(), place.getName().toString());
@@ -167,7 +202,7 @@ public class Tab1 extends Fragment {
                 for (final DataSnapshot children : dataSnapshot.getChildren()) {
                     System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
                     ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
-                    if(cities == null){
+                    if (cities == null) {
                         cities = new ArrayList<String>();
                     }
                     cities.add(children.getKey());
@@ -176,19 +211,19 @@ public class Tab1 extends Fragment {
 
                 ArrayList<String> places_id = new ArrayList<String>();
                 ArrayList<String> ownPlaces = new ArrayList<String>();
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
-                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
+                    if (entry.getKey().equals(Logic.getInstance().getUserMail())) {
                         ownPlaces.addAll(entry.getValue());
                     }
                 }
 
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
                     boolean match = false;
                     String matchedPlace = "";
-                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
-                        for(String place : ownPlaces){
-                            for(String otherPlace : entry.getValue()){
-                                if(place.equals(otherPlace)){
+                    if (!entry.getKey().equals(Logic.getInstance().getUserMail())) {
+                        for (String place : ownPlaces) {
+                            for (String otherPlace : entry.getValue()) {
+                                if (place.equals(otherPlace)) {
                                     match = true;
                                     matchedPlace = place;
                                 }
@@ -196,16 +231,16 @@ public class Tab1 extends Fragment {
                         }
                     }
 
-                    if(match){
-                        for(String place : entry.getValue()){
-                            if(!place.equals(matchedPlace)){
+                    if (match) {
+                        for (String place : entry.getValue()) {
+                            if (!place.equals(matchedPlace)) {
                                 places_id.add(place);
                             }
                         }
                     }
                 }
 
-                for(String id : places_id) {
+                for (String id : places_id) {
                     Places.GeoDataApi.getPlaceById(mGoogleApiClient, id)
                             .setResultCallback(new ResultCallback<PlaceBuffer>() {
                                 @Override
@@ -237,7 +272,7 @@ public class Tab1 extends Fragment {
                 for (final DataSnapshot children : dataSnapshot.getChildren()) {
                     System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
                     ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
-                    if(cities == null){
+                    if (cities == null) {
                         cities = new ArrayList<String>();
                     }
                     cities.add(children.getKey());
@@ -246,19 +281,19 @@ public class Tab1 extends Fragment {
 
                 ArrayList<String> places_id = new ArrayList<String>();
                 ArrayList<String> ownPlaces = new ArrayList<String>();
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
-                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
+                    if (entry.getKey().equals(Logic.getInstance().getUserMail())) {
                         ownPlaces.addAll(entry.getValue());
                     }
                 }
 
-                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                for (Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()) {
                     boolean match = false;
                     String matchedPlace = "";
-                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
-                        for(String place : ownPlaces){
-                            for(String otherPlace : entry.getValue()){
-                                if(place.equals(otherPlace)){
+                    if (!entry.getKey().equals(Logic.getInstance().getUserMail())) {
+                        for (String place : ownPlaces) {
+                            for (String otherPlace : entry.getValue()) {
+                                if (place.equals(otherPlace)) {
                                     match = true;
                                     matchedPlace = place;
                                 }
@@ -266,16 +301,16 @@ public class Tab1 extends Fragment {
                         }
                     }
 
-                    if(match){
-                        for(String place : entry.getValue()){
-                            if(!place.equals(matchedPlace)){
+                    if (match) {
+                        for (String place : entry.getValue()) {
+                            if (!place.equals(matchedPlace)) {
                                 places_id.add(place);
                             }
                         }
                     }
                 }
 
-                for(String id : places_id) {
+                for (String id : places_id) {
                     Places.GeoDataApi.getPlaceById(mGoogleApiClient, id)
                             .setResultCallback(new ResultCallback<PlaceBuffer>() {
                                 @Override
