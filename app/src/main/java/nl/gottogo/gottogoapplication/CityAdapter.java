@@ -35,15 +35,43 @@ import java.util.ArrayList;
  * Created by dande on 30-3-2017.
  */
 
+/**
+ * City Adapter class for custom listview.
+ */
 public class CityAdapter extends ArrayAdapter<City> {
+
+    //Fields for the city adapter class.
+
     private int Position;
     private Bitmap image = null;
     private DatabaseReference mUserDatabase;
 
+    //Views for the city adapter class.
+
+    private LinearLayout llBackground;
+    private TextView tvCityName;
+    private LinearLayout llButtons;
+    private Button btnRemove;
+    private Button btnReview;
+    private Button btnDetail;
+
+    /**
+     * Constructor of the City Adapter.
+     * @param context the context.
+     * @param cities the cities that need to get places in the listview.
+     */
     public CityAdapter(Context context,ArrayList<City> cities) {
         super(context,0,cities);
         Position = -1;
     }
+
+    /**
+     * Generating the view of the card.
+     * @param position the position of the card.
+     * @param convertView the view when clicked on.
+     * @param parent the parent.
+     * @return the view of the card.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         final City city = getItem(position);
@@ -52,87 +80,56 @@ public class CityAdapter extends ArrayAdapter<City> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_city,parent,false);
         }
 
-        final LinearLayout llBackground = (LinearLayout) convertView.findViewById(R.id.llBackground);
-        TextView tvCityName = (TextView) convertView.findViewById(R.id.tvCityName);
-        LinearLayout llButtons = (LinearLayout) convertView.findViewById(R.id.llButtons);
-        Button remove = (Button) convertView.findViewById(R.id.btnRemove);
-        Button review = (Button) convertView.findViewById(R.id.btnReview);
-        Button detail = (Button) convertView.findViewById(R.id.btnDetail);
+        setViews(convertView);
+        firebasePictures(city, this.llBackground);
 
-        llButtons.setVisibility(convertView.GONE);
+        this.tvCityName.setText(city.getName());
+        this.llButtons.setVisibility(convertView.GONE);
 
-        mUserDatabase = FirebaseDatabase.getInstance().getReference("cities").child(city.getPlace_id());
-        mUserDatabase.addChildEventListener(new ChildEventListener() {
+        if(llBackground.getBackground() == null){
+            llBackground.setBackgroundResource(R.drawable.amsterdam);
+        }
+
+        if(this.Position == position){
+            this.llButtons.setVisibility(convertView.VISIBLE);
+        }
+
+        this.btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logic.getInstance().removeFileRemovedCities();
+            }
+        });
+
+        this.btnDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getContext().startActivity(new Intent(getContext(),DetailCityView.class));
+            }
+        });
+
+        return convertView;
+    }
+
+    /**
+     * Method to get the pictures from the firebase.
+     */
+    public void firebasePictures(final City finalCity, final LinearLayout llBg){
+        this.mUserDatabase = FirebaseDatabase.getInstance().getReference("cities").child(finalCity.getPlace_id());
+        this.mUserDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                for(DataSnapshot children : dataSnapshot.getChildren()) {
-                    System.out.println("image: " + city.getPlace_id() + "/" + children.getKey());
-                    StorageReference islandRef = FirebaseStorage.getInstance().getReference().child(city.getPlace_id() + "/" + children.getKey());
-
-                    final long ONE_MEGABYTE = 1024 * 1024;
-                    islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap bm = Bitmap.createScaledBitmap(image, 1000, 450, true);
-                            city.setImage(bm);
-                            llBackground.setBackground(new BitmapDrawable(getContext().getResources(), bm));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    });
-                    break;
-                }
+                addImagesCity(dataSnapshot, finalCity, llBg);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                for(DataSnapshot children : dataSnapshot.getChildren()) {
-                    System.out.println("image: " + city.getPlace_id() + "/" + children.getKey());
-                    StorageReference islandRef = FirebaseStorage.getInstance().getReference().child(city.getPlace_id() + "/" + children.getKey());
-
-                    final long ONE_MEGABYTE = 1024 * 1024;
-                    islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap bm = Bitmap.createScaledBitmap(image, 1000, 450, true);
-                            city.setImage(bm);
-                            llBackground.setBackground(new BitmapDrawable(getContext().getResources(), bm));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    });
-                    break;
-                }
+                addImagesCity(dataSnapshot, finalCity, llBg);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                for(DataSnapshot children : dataSnapshot.getChildren()) {
-                    System.out.println("image: " + city.getPlace_id() + "/" + children.getKey());
-                    StorageReference islandRef = FirebaseStorage.getInstance().getReference().child(city.getPlace_id() + "/" + children.getKey());
-
-                    final long ONE_MEGABYTE = 1024 * 1024;
-                    islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Bitmap bm = Bitmap.createScaledBitmap(image, 1000, 450, true);
-                            city.setImage(bm);
-                            llBackground.setBackground(new BitmapDrawable(getContext().getResources(), bm));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                        }
-                    });
-                    break;
-                }
+                addImagesCity(dataSnapshot, finalCity, llBg);
             }
 
             @Override
@@ -145,53 +142,53 @@ public class CityAdapter extends ArrayAdapter<City> {
 
             }
         });
-
-        if(llBackground.getBackground() == null){
-            llBackground.setBackgroundResource(R.drawable.amsterdam);
-        }
-
-        tvCityName.setText(city.getName());
-
-        if(this.Position == position){
-            llButtons.setVisibility(convertView.VISIBLE);
-        }
-
-        remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mUserDatabase = FirebaseDatabase.getInstance().getReference("users").child(Logic.getInstance().getUserMail()).child(city.getPlace_id());
-                try {
-                    mUserDatabase.removeValue();
-                } catch (Exception e){
-                    FileOutputStream outputStream = null;
-                    try {
-                        outputStream = getContext().openFileOutput("cities", Context.MODE_APPEND);
-                        outputStream.write((city.getPlace_id() + "\n").getBytes());
-                    } catch (FileNotFoundException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
-        review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        detail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                getContext().startActivity(new Intent(getContext(),DetailCityView.class));
-            }
-        });
-
-
-        return convertView;
     }
+
+    /**
+     * Add an image to the city for the card.
+     * @param dataSnapshot the datasnapshot of the firebase.
+     */
+    public void addImagesCity(DataSnapshot dataSnapshot, final City city, final LinearLayout llBackground){
+        for(DataSnapshot children : dataSnapshot.getChildren()) {
+            String url = city.getPlace_id() + "/" + children.getKey();
+            System.out.println("image: " + url);
+            StorageReference islandRef = FirebaseStorage.getInstance().getReference().child(url);
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    Bitmap bm = Bitmap.createScaledBitmap(image, 1000, 450, true);
+                    city.setImage(bm);
+                    llBackground.setBackground(new BitmapDrawable(getContext().getResources(), bm));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                }
+            });
+            break;
+        }
+    }
+
+    /**
+     * Setting all the views.
+     * @param convertView the layout view.
+     */
+    public void setViews(View convertView){
+        llBackground = (LinearLayout) convertView.findViewById(R.id.llBackground);
+        tvCityName = (TextView) convertView.findViewById(R.id.tvCityName);
+        llButtons = (LinearLayout) convertView.findViewById(R.id.llButtons);
+        btnRemove = (Button) convertView.findViewById(R.id.btnRemove);
+        btnReview = (Button) convertView.findViewById(R.id.btnReview);
+        btnDetail = (Button) convertView.findViewById(R.id.btnDetail);
+    }
+
+    /**
+     * Setting the focus when clicked on.
+     * @param position the position of the card.
+     */
     public void setFocus(int position){
         this.Position = position;
     }
