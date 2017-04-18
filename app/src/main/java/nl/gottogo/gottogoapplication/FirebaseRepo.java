@@ -79,9 +79,9 @@ public class FirebaseRepo extends AppCompatActivity {
 
     public void addImage(Bitmap image, City city) {
         Calendar c = Calendar.getInstance();
-        String s = c.getTime().toString() + String.valueOf(c.MILLISECOND)+ ".jpg";
+        String s = c.getTime().toString() + String.valueOf(c.MILLISECOND);
         StorageReference imgRef = FirebaseStorage.getInstance().getReference().child(city.getId() + "/" + s);
-
+        mDatabase.child("cities").child(city.getPlace_id()).child("images").child(s).setValue("image");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();

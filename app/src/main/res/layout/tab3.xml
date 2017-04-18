@@ -18,7 +18,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        class = "com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"/>
+        class = "com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        tools:layout="@layout/place_autocomplete_fragment" />
 
     <Button
         android:id="@+id/btnCamera"

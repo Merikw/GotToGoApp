@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
@@ -41,8 +42,6 @@ public class Tab1 extends Fragment {
     private DatabaseReference mUserDatabase;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, ArrayList<String>> citiesUsers;
-
-    private final Semaphore semaphore = new Semaphore(0);
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -78,13 +77,93 @@ public class Tab1 extends Fragment {
             }
         });
 
-
         mUserDatabase = FirebaseDatabase.getInstance().getReference("users");
+
+        final ArrayList<String > ownList = new ArrayList<String>();
 
         mUserDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final ArrayList<String > ownList = new ArrayList<String>();
+                for (final DataSnapshot children : dataSnapshot.getChildren()) {
+                    System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
+                    ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
+                    if(cities == null){
+                        cities = new ArrayList<String>();
+                    }
+                    cities.add(children.getKey());
+                    citiesUsers.put(dataSnapshot.getKey(), cities);
+                }
+
+                ArrayList<String> places_id = new ArrayList<String>();
+                ArrayList<String> ownPlaces = new ArrayList<String>();
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        ownPlaces.addAll(entry.getValue());
+                    }
+                }
+
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    boolean match = false;
+                    String matchedPlace = "";
+                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        for(String place : ownPlaces){
+                            for(String otherPlace : entry.getValue()){
+                                if(place.equals(otherPlace)){
+                                    match = true;
+                                    matchedPlace = place;
+                                }
+                            }
+                        }
+                    }
+
+                    if(match){
+                        for(String place : entry.getValue()){
+                            if(!place.equals(matchedPlace)){
+                                places_id.add(place);
+                            }
+                        }
+                    }
+                }
+
+                for(final String id : places_id) {
+                    Places.GeoDataApi.getPlaceById(mGoogleApiClient, id)
+                            .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                                @Override
+                                public void onResult(PlaceBuffer places) {
+
+                                    Iterator<String> iter = ownList.iterator();
+
+                                    while (iter.hasNext()) {
+                                        String idNext = iter.next();
+
+                                        if (idNext.equals(id))
+                                            iter.remove();
+                                    }
+
+                                    if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                        final Place place = places.get(0);
+                                        System.out.println(place.getName());
+                                        City c = new City(place.getId(), place.getId(), place.getName().toString());
+                                        boolean exists = false;
+                                        for (City city : data) {
+                                            if (city.getPlace_id().equals(c.getPlace_id())) {
+                                                exists = true;
+                                            }
+                                        }
+                                        if (!exists) {
+                                            data.add(c);
+                                        }
+                                        ca.notifyDataSetChanged();
+                                    } else {
+                                    }
+                                    places.release();
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 for (final DataSnapshot children : dataSnapshot.getChildren()) {
                     System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
                     ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
@@ -154,13 +233,73 @@ public class Tab1 extends Fragment {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot children : dataSnapshot.getChildren()) {
+                    System.out.println(dataSnapshot.getKey() + " : " + children.getKey());
+                    ArrayList<String> cities = citiesUsers.get(dataSnapshot.getKey());
+                    if(cities == null){
+                        cities = new ArrayList<String>();
+                    }
+                    cities.add(children.getKey());
+                    citiesUsers.put(dataSnapshot.getKey(), cities);
+                }
 
+                ArrayList<String> places_id = new ArrayList<String>();
+                ArrayList<String> ownPlaces = new ArrayList<String>();
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    if(entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        ownPlaces.addAll(entry.getValue());
+                    }
+                }
+
+                for(Map.Entry<String, ArrayList<String>> entry : citiesUsers.entrySet()){
+                    boolean match = false;
+                    String matchedPlace = "";
+                    if(!entry.getKey().equals(Logic.getInstance().getUserMail())){
+                        for(String place : ownPlaces){
+                            for(String otherPlace : entry.getValue()){
+                                if(place.equals(otherPlace)){
+                                    match = true;
+                                    matchedPlace = place;
+                                }
+                            }
+                        }
+                    }
+
+                    if(match){
+                        for(String place : entry.getValue()){
+                            if(!place.equals(matchedPlace)){
+                                places_id.add(place);
+                            }
+                        }
+                    }
+                }
+
+                for(String id : places_id) {
+                    Places.GeoDataApi.getPlaceById(mGoogleApiClient, id)
+                            .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                                @Override
+                                public void onResult(PlaceBuffer places) {
+                                    if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                        final Place place = places.get(0);
+                                        System.out.println(place.getName());
+                                        City c = new City(place.getId(), place.getId(), place.getName().toString());
+                                        boolean exists = false;
+                                        for (City city : data) {
+                                            if (city.getPlace_id().equals(c.getPlace_id())) {
+                                                exists = true;
+                                            }
+                                        }
+                                        if (!exists) {
+                                            data.add(c);
+                                        }
+                                        ca.notifyDataSetChanged();
+                                    } else {
+                                    }
+                                    places.release();
+                                }
+                            });
+                }
             }
 
             @Override

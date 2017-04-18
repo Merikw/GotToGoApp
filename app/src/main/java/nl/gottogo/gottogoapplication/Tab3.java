@@ -34,6 +34,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.MapFragment;
 
 import java.util.zip.Deflater;
 
@@ -46,19 +47,28 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
     private ImageView preview;
     private Bitmap image;
     private Intent data;
+    private View rootView;
+    private PlaceAutocompleteFragment autocompleteFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        final View rootView = inflater.inflate(R.layout.tab3, container, false);
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getContext())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this.getActivity(),1, this)
-                .build();
+        if(rootView == null) {
+            rootView = inflater.inflate(R.layout.tab3, container, false);
+        }
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+        if(mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient
+                    .Builder(getContext())
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .enableAutoManage(this.getActivity(), 1, this)
+                    .build();
+        }
+
+        if(autocompleteFragment == null) {
+            autocompleteFragment = (PlaceAutocompleteFragment) getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+        }
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

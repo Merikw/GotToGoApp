@@ -14,6 +14,7 @@ public class Logic {
     private String email;
     private City city;
     private static Logic instance = null;
+    private int positionTab = 0;
 
     private FirebaseRepo repo = new FirebaseRepo();
 
@@ -46,6 +47,14 @@ public class Logic {
 
     public void addImage(Bitmap image, City city){
         repo.addImage(image, city);
+    }
+
+    public int getPositionTab(){
+        return this.positionTab;
+    }
+
+    public void setPositionTab(int position){
+        this.positionTab = position;
     }
 
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,

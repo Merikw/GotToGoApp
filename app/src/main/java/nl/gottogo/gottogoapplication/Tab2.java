@@ -63,6 +63,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -202,6 +203,20 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
         final CityAdapter ca = new CityAdapter(getContext(), citiesListed);
 
+        //Find the listview
+        ListView lv = (ListView) rootView.findViewById(R.id.lvRec);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Logic.getInstance().setCity(citiesListed.get(i));
+                ca.setFocus(i);
+                ca.notifyDataSetChanged();
+            }
+        });
+
+        lv.setAdapter(ca);
+
         mUserDatabase.addChildEventListener(new
 
             ChildEventListener() {
@@ -222,30 +237,53 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
                                 places.release();
                             }
                         });
-
-                    //Find the listview
-                    ListView lv = (ListView) rootView.findViewById(R.id.lvRec);
-
-                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Logic.getInstance().setCity(citiesListed.get(i));
-                            Intent detailIntent = new Intent(getContext(), DetailCityView.class);
-                            startActivity(detailIntent);
-                        }
-                    });
-
-                    lv.setAdapter(ca);
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                    citiesListed.clear();
+                    Places.GeoDataApi.getPlaceById(mGoogleApiClient, dataSnapshot.getKey())
+                            .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                                @Override
+                                public void onResult(PlaceBuffer places) {
+                                    if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                        final Place place = places.get(0);
+                                        System.out.println(place.getName());
+                                        City c = new City(place.getId(), place.getId(), place.getName().toString());
+                                        citiesListed.add(c);
+                                        ca.notifyDataSetChanged();
+                                    } else {
+                                    }
+                                    places.release();
+                                }
+                            });
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Places.GeoDataApi.getPlaceById(mGoogleApiClient, dataSnapshot.getKey())
+                            .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                                @Override
+                                public void onResult(PlaceBuffer places) {
+                                    if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                        final Place place = places.get(0);
+                                        System.out.println(place.getName());
+                                        City c = new City(place.getId(), place.getId(), place.getName().toString());
 
+                                        Iterator<City> iter = citiesListed.iterator();
+
+                                        while (iter.hasNext()) {
+                                            City city = iter.next();
+
+                                            if (city.getId().equals(place.getId()))
+                                                iter.remove();
+                                        }
+                                        ca.notifyDataSetChanged();
+                                    } else {
+                                    }
+                                    places.release();
+                                }
+                            });
                 }
 
                 @Override
