@@ -8,6 +8,21 @@
     tools:layout_editor_absoluteY="25dp"
     tools:layout_editor_absoluteX="0dp">
 
+    <TextView
+        android:id="@+id/tvTutorialTab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="94dp"
+        android:text="Add some cities that you enjoyed!"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/place_autocomplete_fragment"
+        android:layout_marginRight="24dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
     <fragment
         android:id="@+id/place_autocomplete_fragment"
         android:layout_width="0dp"
@@ -31,6 +46,7 @@
         android:text="Add city"
         tools:layout_constraintTop_creator="1"
         android:layout_marginStart="8dp"
+        style="@style/Widget.AppCompat.Button.Colored"
         app:layout_constraintTop_toBottomOf="@+id/place_autocomplete_fragment"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="@+id/place_autocomplete_fragment"
@@ -44,6 +60,7 @@
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnAdd"
         android:layout_marginEnd="8dp"
@@ -77,6 +94,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintVertical_bias="0.0"
         android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp" />
+        android:layout_marginRight="3dp" >
+    </ListView>
 
 </android.support.constraint.ConstraintLayout>

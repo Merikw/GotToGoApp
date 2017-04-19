@@ -42,29 +42,38 @@ import java.util.regex.Pattern;
  * Created by Merik on 24/03/2017.
  */
 
+/**
+ * Class containing the firebase repo.
+ */
 public class FirebaseRepo extends AppCompatActivity {
+
+    //Fields
 
     private DatabaseReference mDatabase;
     private String android_id;
     private AccountManager am;
 
+    /**
+     * Constructor for the firebase repo.
+     * @param am The accountmanager.
+     */
     public FirebaseRepo(AccountManager am) {
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         this.am = am;
-
     }
 
+    /**
+     * Empty constructor for the firebase repo.
+     */
     public FirebaseRepo() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        ;
     }
 
+    /**
+     * Method for registering your device in the database.
+     */
     public void registerDevice() {
-
         Account[] accounts = am.getAccountsByType("com.google");
-
-        System.out.println("HEEEE");
 
         //String email = accounts[0].name;
         //Logic.getInstance().setUserMail(email);
@@ -72,11 +81,20 @@ public class FirebaseRepo extends AppCompatActivity {
         Logic.getInstance().setUserMail("Merik");
     }
 
+    /**
+     * Method for adding the city to the firebase.
+     * @param city the city that needs to be added.
+     */
     public void addCity(City city) {
         mDatabase.child("users").child(Logic.getInstance().getUserMail()).child(city.getPlace_id()).setValue(city.getName());
         mDatabase.child("cities").child(city.getPlace_id()).setValue(city.getName());
     }
 
+    /**
+     * Adding an image of a city to the firebase.
+     * @param image the image that needs to get added.
+     * @param city the city that the image needs to get added to.
+     */
     public void addImage(Bitmap image, City city) {
         Calendar c = Calendar.getInstance();
         String s = c.getTime().toString() + String.valueOf(c.MILLISECOND);

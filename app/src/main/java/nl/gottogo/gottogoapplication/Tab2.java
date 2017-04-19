@@ -4,77 +4,59 @@ package nl.gottogo.gottogoapplication;
  * Created by Merik on 23/03/2017.
  */
 
-import android.*;
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.LocationSource;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-
-import static com.google.android.gms.maps.LocationSource.*;
 
 public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleApiClient.ConnectionCallbacks {
 
     private City selected;
     private ArrayList<City> cities;
     private DatabaseReference mUserDatabase;
+    private TextView tvTutorialTab2;
 
     private LocationManager locationManager;
     private android.location.LocationListener locationListener;
@@ -91,7 +73,8 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
         final View rootView = inflater.inflate(R.layout.tab2, container, false);
         Button btnAdd = (Button) rootView.findViewById(R.id.btnAdd);
-        Button btnGPS = (Button) rootView.findViewById(R.id.btnGPS);
+        final Button btnGPS = (Button) rootView.findViewById(R.id.btnGPS);
+        tvTutorialTab2 = (TextView) rootView.findViewById(R.id.tvTutorialTab2);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getContext())
@@ -141,7 +124,6 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
             @Override
             public void onProviderDisabled(String provider) {
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-
             }
         };
 
@@ -160,7 +142,26 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Logic.getInstance().addCity(selected);
+                if(selected != null) {
+                    Logic.getInstance().addCity(selected);
+                    Intent i = getContext().getPackageManager().getLaunchIntentForPackage(getContext().getPackageName());
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    getContext().startActivity(i);
+                }
+                else {
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                    dlgAlert.setMessage("You should select a city! If you did this with gps, click on the text box and " +
+                            "please select the corresponding city.");
+                    dlgAlert.setTitle("GotToGo Error!");
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                }
             }
         });
 
@@ -174,7 +175,7 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-                if(lon == 0 || lat == 0){
+                if((lon == 0 || lat == 0) && loc != null){
                     lon = loc.getLongitude();
                     lat = loc.getLatitude();
                 }
@@ -254,6 +255,13 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
                                         ca.notifyDataSetChanged();
                                     } else {
                                     }
+
+                                    if(citiesListed.size() > 0){
+                                        tvTutorialTab2.setVisibility(View.INVISIBLE);
+                                    } else{
+                                        tvTutorialTab2.setVisibility(View.VISIBLE);
+                                    }
+
                                     places.release();
                                 }
                             });
@@ -281,6 +289,13 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
                                         ca.notifyDataSetChanged();
                                     } else {
                                     }
+
+                                    if(citiesListed.size() > 0){
+                                        tvTutorialTab2.setVisibility(View.INVISIBLE);
+                                    } else{
+                                        tvTutorialTab2.setVisibility(View.VISIBLE);
+                                    }
+
                                     places.release();
                                 }
                             });
@@ -301,7 +316,7 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnected(Bundle bundle) {
 
     }
 
@@ -311,7 +326,7 @@ public class Tab2 extends Fragment implements GoogleApiClient.OnConnectionFailed
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 

@@ -3,4 +3,10 @@
     <string name="title_activity_main_tabbed">MainTabbed</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="tutTab1">"It looks like you haven't put any cities into your list! To get any recommended cities, first go to the your list tab to add some cities which you like to get suggested cities."</string>
+    <string name="food">"Food"</string>
+    <string name="Environment">"Environment"</string>
+    <string name="Transportation">"Transportation"</string>
+    <string name="Sights">"Sights"</string>
+
 </resources>

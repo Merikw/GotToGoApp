@@ -4,29 +4,23 @@ package nl.gottogo.gottogoapplication;
  * Created by Merik on 23/03/2017.
  */
 
-import android.*;
-import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -34,9 +28,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.MapFragment;
-
-import java.util.zip.Deflater;
 
 import static nl.gottogo.gottogoapplication.R.id.imageView;
 
@@ -99,8 +90,33 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selected != null && selected.getPlace_id() != null && selected.getPlace_id().length() > 0) {
+                if(selected != null && selected.getPlace_id() != null && selected.getPlace_id().length() > 0 && image != null) {
                     Logic.getInstance().addImage(image, selected);
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                    dlgAlert.setMessage("You posted an image at the city with succes!");
+                    dlgAlert.setTitle("GotToGo");
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = getContext().getPackageManager().getLaunchIntentForPackage(getContext().getPackageName());
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    getContext().startActivity(i);
+                                }
+                            });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                } else{
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(getContext());
+                    dlgAlert.setMessage("You should select a city and add a picutre first!");
+                    dlgAlert.setTitle("GotToGo Error!");
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
                 }
             }
         });
@@ -115,7 +131,6 @@ public class Tab3 extends Fragment implements GoogleApiClient.OnConnectionFailed
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //Nog fixen
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             image = (Bitmap) data.getExtras().get("data");
             preview.setImageBitmap(image);
